@@ -1,0 +1,15 @@
+# Pastas que não devem ser enviadas
+bin/
+obj/
+.idea/
+.vs/
+
+*.user
+*.suo
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.db
+*.bak
