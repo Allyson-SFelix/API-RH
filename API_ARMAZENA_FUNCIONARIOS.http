@@ -1,6 +1,0 @@
-@API_ARMAZENA_FUNCIONARIOS_HostAddress = http://localhost:5001
-
-GET {{API_ARMAZENA_FUNCIONARIOS_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
