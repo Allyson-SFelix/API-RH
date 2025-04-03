@@ -1,9 +1,11 @@
-# Pastas que não devem ser enviadas
+# Pastas que nÃ£o devem ser enviadas
 bin/
 obj/
 .idea/
 .vs/
 
+*.http
+*.json
 *.user
 *.suo
 *.exe
