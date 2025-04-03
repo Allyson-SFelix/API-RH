@@ -3,6 +3,8 @@ bin/
 obj/
 .idea/
 .vs/
+*.json
+*.http
 
 *.http
 *.json
