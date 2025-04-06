@@ -9,6 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+
+
+/* SOBRE JWT
+//dotnet user-secrets set "JwtSettings:SecretKey" "Chave"
+// pego a local
+var KeySecret =builder.Configuration["JwtSettings:SecretKey"];
+// rescrevo no json com a chave sem expor
+builder.Configuration["JwtSettings:SecretKey"] = KeySecret;
+*/
+
+
 // pegar do user-secret a string de conexão
 //dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=IP;Port=Port;Database=BancoNome;User Id=User;Password=Senha;"
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
