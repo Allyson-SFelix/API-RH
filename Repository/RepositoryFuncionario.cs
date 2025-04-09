@@ -1,9 +1,9 @@
 ﻿using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
-using API_ARMAZENA_FUNCIONARIOS.Model;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
 using Microsoft.EntityFrameworkCore;
+using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
 
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository
