@@ -4,6 +4,9 @@ using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
 using Microsoft.EntityFrameworkCore;
 using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
+using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
+using Dapper;
+using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository
@@ -56,24 +59,43 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
         }
 
-        public async Task<bool> SalvarFuncionario(FuncionarioRequest cliente)
+        public async Task<bool> SalvarFuncionario(FuncionarioRequest funcionario)
         {
-            if (cliente == null)
+            // verifico os dados que chegam
+            if (funcionario == null)
             {
                 return false;
             }
 
-            try {
-                ModelFuncionario newCliente = new ModelFuncionario(cliente.nome, cliente.idade);
-                _connection.Funcionario.Add(newCliente);
-                await CommitChanges();
-                return true;
-            }
-            catch (Exception ex)
+            // verifico se o nome do setor é válido
+            int id_Setor = 0;
+            using (var connection = DbConennectionDapper.GetStringConnection())
             {
-                Console.WriteLine($"Erro em SalvarCliente: {ex.Message}");
-                return false;
+                string query = "SELECT id FROM setor WHERE nome=@nome";
+                var resultQuery= await connection.QuerySingleAsync<int>(query, new {nome = funcionario.setorNome});
+                id_Setor = resultQuery;
+                if (id_Setor == 0)
+                {
+                    return false;
+                }
             }
+
+
+
+                try
+                {
+
+                    ModelFuncionario newCliente = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
+                        funcionario.cpf,id_Setor,funcionario.salario,funcionario.dataNascimento,EnumStatus.ativo);
+                    _connection.Funcionario.Add(newCliente);
+                    await CommitChanges();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro em SalvarCliente: {ex.Message}");
+                    return false;
+                }
 
         }
 

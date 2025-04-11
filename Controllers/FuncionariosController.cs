@@ -47,11 +47,11 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         [HttpPost]
         [Route("/inserirFuncionario")]
-        public async Task<IActionResult> Post([FromBody]FuncionarioRequest cliente)
+        public async Task<IActionResult> Post([FromBody]FuncionarioRequest funcionario)
         {
-            if(await clientesLojaFisica.SalvarFuncionario(cliente))
+            if(await clientesLojaFisica.SalvarFuncionario(funcionario))
             {
-                return Ok("Salvo com sucesso: Nome ="+cliente.nome+"\nIdade ="+cliente.idade);
+                return Ok("Salvo com sucesso: Nome ="+ funcionario.nome+"\nIdade ="+ funcionario.idade);
             }
             return BadRequest(new { mensagem="Valor inadequados para serem salvos" });
         }

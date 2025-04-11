@@ -1,4 +1,5 @@
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext;
+using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
 using API_ARMAZENA_FUNCIONARIOS.Repository;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 //armazenando para injeção de dependencia da string de conexão
 builder.Services.AddDbContext<DbConnectionContext>(options =>
     options.UseNpgsql(connectionString));
+
+// passo a string de conexao para a classe do Dapper
+DbConennectionDapper.SetConnection(connectionString);
+
+
 
 // injeção que toda vez que for acionado será instanciado um novo objeto dessa classe que utiliza essa interface
 builder.Services.AddScoped<IFuncionario,RepositoryFuncionario>(); 
