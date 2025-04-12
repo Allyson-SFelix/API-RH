@@ -5,8 +5,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.IRepository
 {
     public interface IFuncionario
     {
-        public Task<List<FuncionarioResponse>> ListarFuncionario();
-        public Task<FuncionarioResponse> PegarFuncionario( int id);
+        public Task<List<FuncionarioResponse>> ListarFuncionario(string nomeSetor);
+        public Task<FuncionarioResponse> PegarFuncionario(string cpf);
         public Task<bool> SalvarFuncionario(FuncionarioRequest cliente);
         public Task CommitChanges();
         // public bool RemoveCliente(int id);

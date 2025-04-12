@@ -9,9 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-
-
-
+/*
+"JwtSettings": {
+    "SecretKey": "", //é uma var secret ou ambiente 
+            "Issuer": "RH-API", // de onde vem o token
+            "Audience": "Users", // quem pode usar esse token
+            "ExpirationMinutes": "15" //tempo de expiração do token
+   }
+*/
 /* SOBRE JWT
 //dotnet user-secrets set "JwtSettings:SecretKey" "Chave"
 // pego a local

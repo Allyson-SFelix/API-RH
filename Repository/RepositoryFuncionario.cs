@@ -7,7 +7,8 @@ using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
 using Dapper;
 using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
-
+using API_ARMAZENA_FUNCIONARIOS.Repository.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository
 {
@@ -26,41 +27,89 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
 
 
-        public async Task<List<FuncionarioResponse>> ListarFuncionario() {
-            var clientes = await _connection.Funcionario.ToListAsync();
-            
-            if (clientes == null)
-            {
-                return null;
-            }
-            
-            try
-            {
-                List<FuncionarioResponse> clienteOficial = clientes.Select(cl => new FuncionarioResponse(cl.nome, cl.idade, cl.id)).ToList();
+        public async Task<List<FuncionarioResponse>> ListarFuncionario(string nomeSetor)
+        {
+            /*Listar funcionários por setor
+             (nome_setor) => return(List<ClasseFuncionario> com JOIN semelhante ao busca pelo CPF)
+             [OBS: verificar status com WHERE]
+             */
+            // verifico se o nome do setor é válido
+            int id_Setor = await ServicesRepository.VerificaSetor(nomeSetor);
 
-                return clienteOficial;
-            }
-            catch(Exception ex) {
-                Console.WriteLine("Erro no ListarClientesFisica" + ex.Message);
+            if (id_Setor == 0)
+            {
                 return null;
+            }
+            List<FuncionarioResponse> listaFuncionariosResponse = null!;
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "SELECT f.*, s.nome AS setor_nome FROM funcionarios" +
+                        " JOIN setores s ON f.id_setor = f.id" +
+                        " WHERE id_setor =  AND status=@status";
+
+                    var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query);
+                    listaFuncionariosResponse = funcionarios.ToList();
+                    return listaFuncionariosResponse;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Listar Funcionarios: " + ex.Message);
+                    return null;
+                }
+
             }
         }
-        public async Task<FuncionarioResponse> PegarFuncionario(int id)
+
+        public async Task<FuncionarioResponse> PegarFuncionario(string cpf)
         {
-            var cliente = await _connection.Funcionario.FirstOrDefaultAsync(cl=>cl.id==id);
-            if (cliente != null)
-            {
-                FuncionarioResponse oficialCliente = new FuncionarioResponse(cliente.nome, cliente.idade, cliente.id);
-                return oficialCliente;
-            }
-            else
+            /* Buscar por CPF
+             * (cpf) => return
+            *  (Classe funcionario com JOIN pegando nome do setor 
+             *   ordenando por setor e nome dos setores por ordem alfabética) 
+             *   [OBS: verificar status com WHERE]
+             */
+            if (cpf == "")
             {
                 return null;
             }
+
+
+            FuncionarioResponse  funcionario = null!;
+            
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "SELECT f.*, s.nome AS setor_nome FROM funcionarios" +
+                        "JOIN setores s ON f.id_setor = f.id" +
+                        " WHERE cpf=@Cpf AND status=@status";
+                    funcionario = await conn.QuerySingleAsync<FuncionarioResponse>(query, new { Cpf = cpf, status = EnumStatus.ativo });
+                    if (funcionario == null)
+                    {
+                        return null;
+                    }
+                }
+                catch(Exception ex) 
+                {
+                    Console.WriteLine("Pegar Funcionario: "+ex.Message); 
+                    return null;
+                }
+            
+            }
+            return funcionario;
         }
 
-        public async Task<bool> SalvarFuncionario(FuncionarioRequest funcionario)
-        {
+        public async Task<bool> SalvarFuncionario([FromBody] FuncionarioRequest funcionario)
+        {   
+            /*
+                // *recebo o objeto funcionarioRequest
+                // *verifico os dados recebidos se estão com valores válidos
+                // *verifico se existe o setor com essa string e pego seu ID (posso usar o Dapper) busca com where nome=funcionario.nome;
+                // *mando os dados da tabela funcionario 
+            */
+
             // verifico os dados que chegam
             if (funcionario == null)
             {
@@ -68,26 +117,14 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
             // verifico se o nome do setor é válido
-            int id_Setor = 0;
-            using (var connection = DbConennectionDapper.GetStringConnection())
-            {
-                string query = "SELECT id FROM setor WHERE nome=@nome";
-                var resultQuery= await connection.QuerySingleAsync<int>(query, new {nome = funcionario.setorNome});
-                id_Setor = resultQuery;
-                if (id_Setor == 0)
-                {
-                    return false;
-                }
-            }
-
-
+            int id_Setor = await ServicesRepository.VerificaSetor(funcionario.setorNome);
 
                 try
                 {
 
-                    ModelFuncionario newCliente = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
+                    ModelFuncionario newFuncionario = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
                         funcionario.cpf,id_Setor,funcionario.salario,funcionario.dataNascimento,EnumStatus.ativo);
-                    _connection.Funcionario.Add(newCliente);
+                    _connection.Funcionario.Add(newFuncionario);
                     await CommitChanges();
                     return true;
                 }

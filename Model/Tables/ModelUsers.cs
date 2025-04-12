@@ -19,4 +19,3 @@ namespace API_ARMAZENA_FUNCIONARIOS.Model.Tables
         public EnumRoles roles { get; set; }
     }
 }
-}

@@ -1,6 +1,6 @@
 ﻿using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using Microsoft.Extensions.Configuration;
-
+/*
 namespace API_ARMAZENA_FUNCIONARIOS.Services.TokenAuth
 {
     public class ConfigurationToken
@@ -20,3 +20,4 @@ namespace API_ARMAZENA_FUNCIONARIOS.Services.TokenAuth
         }
     }
 }
+*/
