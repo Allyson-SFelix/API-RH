@@ -26,7 +26,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("/listaFuncionarios")]
         public async Task<IActionResult> Get(string nomeSetor) {
             List<FuncionarioResponse> funcionarios= await funcionarioRep.ListarFuncionario(nomeSetor);
-            if (funcionarios != null)
+            if (funcionarios.Count() >0)
             {
                 return Ok(funcionarios); //return como json
             }

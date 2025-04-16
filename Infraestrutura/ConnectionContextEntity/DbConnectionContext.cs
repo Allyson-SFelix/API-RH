@@ -32,9 +32,12 @@ namespace API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext
             modelBuilder.Entity<ModelSetores>()
                 .Property(e => e.status);
 
-          //  modelBuilder.HasPostgresEnum<EnumRoles>();
-           // modelBuilder.Entity<EnumRoles>()
-           //     .Property(e => e.roles);
+            modelBuilder.Entity<ModelFuncionario>()
+                .Property(e => e.status);
+
+            //  modelBuilder.HasPostgresEnum<EnumRoles>();
+            // modelBuilder.Entity<EnumRoles>()
+            //     .Property(e => e.roles);
 
         }
     }

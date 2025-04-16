@@ -37,23 +37,20 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 return null!;
             }
 
-            List<FuncionarioResponse> listaFuncionariosResponse = new List<FuncionarioResponse>();
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
                 {
                     string query = "SELECT f.* FROM funcionarios  f" +
-                        " JOIN setores s ON f.id_setor = s.id" +
-                        " WHERE id_setor =@id  AND f.status='ativo'";
+                        " WHERE id_setor =@id  AND f.status = @status::enum_status"; 
+                    //deve haver esse casting para infomrar que garante ser desse tipo de enum que é enum
 
-                    var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor});
-                    if (funcionarios != null)
+                    var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor, status=EnumStatus.ativo.ToString()});
+                    if (funcionarios ==null)
                     {
-                        foreach(FuncionarioResponse f in funcionarios){
-                            listaFuncionariosResponse.Add(f);
-                        }
+                        return null!;
                     }
-                    return listaFuncionariosResponse;
+                    return funcionarios.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +65,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         {
             if (cpf == "")
             {
-                return null;
+                return null!;
             }
 
 
@@ -78,23 +75,22 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 try
                 {
-                    string query = "SELECT f.*, s.nome AS setor_nome FROM funcionarios" +
-                        "JOIN setores s ON f.id_setor = f.id" +
-                        " WHERE cpf=@Cpf AND status=@status";
-                    funcionario = await conn.QuerySingleAsync<FuncionarioResponse>(query, new { Cpf = cpf, status = EnumStatus.ativo });
+                    string query = "SELECT f.* FROM funcionarios f" +
+                        " WHERE cpf=@Cpf AND f.status=@status::enum_status";
+                    funcionario = await conn.QuerySingleAsync<FuncionarioResponse>(query, new { Cpf = cpf, status = EnumStatus.ativo.ToString() });
                     if (funcionario == null)
                     {
-                        return null;
+                        return null!;
                     }
+                    return funcionario;
                 }
                 catch(Exception ex) 
                 {
                     Console.WriteLine("Pegar Funcionario: "+ex.Message); 
-                    return null;
+                    return null!;
                 }
             
             }
-            return funcionario;
         }
 
         public async Task<bool> SalvarFuncionario([FromBody] FuncionarioRequest funcionario)
