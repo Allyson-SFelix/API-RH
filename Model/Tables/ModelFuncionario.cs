@@ -14,19 +14,19 @@ namespace API_ARMAZENA_FUNCIONARIOS.Model.Tables
 
         public string nome { get; set; }
 
-        public DateTime dataEntrada { get; set; }
+        public DateOnly dataentrada { get; set; }
 
         public string cpf { get; set; }
         public int id_setor { get; set; }
 
         public float salario { get; set; }
 
-        public DateTime data_nascimento { get; set; }
+        public DateOnly data_nascimento { get; set; }
         public EnumStatus status { get; set; }
-        public ModelFuncionario(string nome, DateTime dataEntrada, string cpf, int id_setor, float salario, DateTime data_nascimento, EnumStatus status)
+        public ModelFuncionario(string nome, DateOnly dataentrada, string cpf, int id_setor, float salario, DateOnly data_nascimento, EnumStatus status)
         {
             this.nome = nome;
-            this.dataEntrada = dataEntrada;
+            this.dataentrada = dataentrada;
             this.cpf = cpf;
             this.id_setor = id_setor;
             this.salario = salario;

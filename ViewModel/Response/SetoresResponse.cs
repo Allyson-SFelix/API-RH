@@ -13,5 +13,15 @@ namespace API_ARMAZENA_FUNCIONARIOS.ViewModel.Response
         public string localizacao { get; set; }
 
         public EnumStatus status { get; set; }
+
+        public SetoresResponse() { }
+        public SetoresResponse(int id, string nome, int qtd_funcionarios, string localizacao, EnumStatus status)
+        {
+            this.id = id;
+            this.nome = nome;
+            this.qtd_funcionarios = qtd_funcionarios;
+            this.localizacao = localizacao;
+            this.status = status;
+        }
     }
 }

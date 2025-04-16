@@ -1,4 +1,6 @@
-﻿using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
+﻿using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
+using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
+using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +32,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         [HttpPost]
         [Route("/salvarSetor")]
-        public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) { 
+        public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) {
+            ModelSetores setorModel = new ModelSetores(setor.nome, setor.qtd_funcionarios, setor.localizacao,EnumStatus.ativo);
 
             if(await setoresRep.SalvarSetor(setor))
             {

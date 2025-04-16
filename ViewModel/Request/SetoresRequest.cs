@@ -5,7 +5,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.ViewModel.Request
 {
     public class SetoresRequest
     {
-        public int id { get; set; }
 
         public string nome { get; set; }
 
@@ -13,7 +12,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.ViewModel.Request
 
         public string localizacao { get; set; }
 
-        public EnumStatus status { get; set; }
 
         [JsonConstructor]
         public SetoresRequest(string nome, int qtd_funcionarios, string localizacao)

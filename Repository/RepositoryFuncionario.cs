@@ -34,25 +34,31 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
             if (id_Setor == 0)
             {
-                return null;
+                return null!;
             }
-            List<FuncionarioResponse> listaFuncionariosResponse = null!;
+
+            List<FuncionarioResponse> listaFuncionariosResponse = new List<FuncionarioResponse>();
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
                 {
-                    string query = "SELECT f.*, s.nome AS setor_nome FROM funcionarios" +
-                        " JOIN setores s ON f.id_setor = f.id" +
-                        " WHERE id_setor =  AND status=@status";
+                    string query = "SELECT f.* FROM funcionarios  f" +
+                        " JOIN setores s ON f.id_setor = s.id" +
+                        " WHERE id_setor =@id  AND f.status='ativo'";
 
-                    var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query);
-                    listaFuncionariosResponse = funcionarios.ToList();
+                    var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor});
+                    if (funcionarios != null)
+                    {
+                        foreach(FuncionarioResponse f in funcionarios){
+                            listaFuncionariosResponse.Add(f);
+                        }
+                    }
                     return listaFuncionariosResponse;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Listar Funcionarios: " + ex.Message);
-                    return null;
+                    return null!;
                 }
 
             }
@@ -117,7 +123,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Erro em SalvarCliente: {ex.Message}");
-                    return false;
+                    Console.WriteLine("Erro ao salvar no banco: " + ex.InnerException?.Message);
+                     return false;
                 }
 
         }

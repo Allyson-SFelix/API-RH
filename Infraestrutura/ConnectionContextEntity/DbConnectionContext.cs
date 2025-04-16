@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
+using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 
 
 namespace API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext
@@ -22,6 +23,20 @@ namespace API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext
 
         public DbConnectionContext(DbContextOptions<DbConnectionContext> options)
         : base(options) { }
+
+
+        // compreender os enums sem precisar converter
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasPostgresEnum<EnumStatus>();
+            modelBuilder.Entity<ModelSetores>()
+                .Property(e => e.status);
+
+          //  modelBuilder.HasPostgresEnum<EnumRoles>();
+           // modelBuilder.Entity<EnumRoles>()
+           //     .Property(e => e.roles);
+
+        }
     }
 }
 

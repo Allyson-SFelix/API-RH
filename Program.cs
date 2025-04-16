@@ -1,8 +1,10 @@
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext;
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
+using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Repository;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +37,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 //armazenando para injeção de dependencia da string de conexão
 builder.Services.AddDbContext<DbConnectionContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString,
+    o =>
+    { //cadastrando os enums para serem semelhantes no uso
+        o.MapEnum<EnumStatus>();
+      //  o.MapEnum<EnumRoles>();
+    } ) ); 
+
+
+
 
 // passo a string de conexao para a classe do Dapper
 DbConennectionDapper.SetConnection(connectionString);

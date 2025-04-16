@@ -15,7 +15,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
         {
             using (var connection = DbConennectionDapper.GetStringConnection())
             {
-                string query = "SELECT id FROM setor WHERE nome=@Nome";
+                string query = "SELECT id FROM setores WHERE nome=@Nome";
                 var resultQuery =await connection.QuerySingleAsync<int>(query, new { Nome = nome });
                 return resultQuery;
             }

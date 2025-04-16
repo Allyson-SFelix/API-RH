@@ -1,4 +1,5 @@
-﻿using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
+﻿using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
+using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository.IRepository

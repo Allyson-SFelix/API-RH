@@ -16,9 +16,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Model.Tables
 
         public string localizacao { get; set; }
 
-        public string status { get; set; }
+        public EnumStatus status { get; set; }
 
-        public ModelSetores(string nome, int qtd_funcionarios, string localizacao, string status)
+        public ModelSetores(string nome, int qtd_funcionarios, string localizacao, EnumStatus status)
         {
             this.nome = nome;
             this.qtd_funcionarios = qtd_funcionarios;
