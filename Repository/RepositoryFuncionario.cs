@@ -29,10 +29,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<List<FuncionarioResponse>> ListarFuncionario(string nomeSetor)
         {
-            /*Listar funcionários por setor
-             (nome_setor) => return(List<ClasseFuncionario> com JOIN semelhante ao busca pelo CPF)
-             [OBS: verificar status com WHERE]
-             */
             // verifico se o nome do setor é válido
             int id_Setor = await ServicesRepository.VerificaSetor(nomeSetor);
 
@@ -64,12 +60,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<FuncionarioResponse> PegarFuncionario(string cpf)
         {
-            /* Buscar por CPF
-             * (cpf) => return
-            *  (Classe funcionario com JOIN pegando nome do setor 
-             *   ordenando por setor e nome dos setores por ordem alfabética) 
-             *   [OBS: verificar status com WHERE]
-             */
             if (cpf == "")
             {
                 return null;
@@ -102,14 +92,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
 
         public async Task<bool> SalvarFuncionario([FromBody] FuncionarioRequest funcionario)
-        {   
-            /*
-                // *recebo o objeto funcionarioRequest
-                // *verifico os dados recebidos se estão com valores válidos
-                // *verifico se existe o setor com essa string e pego seu ID (posso usar o Dapper) busca com where nome=funcionario.nome;
-                // *mando os dados da tabela funcionario 
-            */
-
+        {  
             // verifico os dados que chegam
             if (funcionario == null)
             {
@@ -124,8 +107,11 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
                     ModelFuncionario newFuncionario = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
                         funcionario.cpf,id_Setor,funcionario.salario,funcionario.dataNascimento,EnumStatus.ativo);
-                    _connection.Funcionario.Add(newFuncionario);
-                    await CommitChanges();
+                    
+                    await  _connection.Funcionario.AddAsync(newFuncionario);
+                    
+                    await ServicesRepository.CommitChanges(this._connection);
+                    
                     return true;
                 }
                 catch (Exception ex)
@@ -136,10 +122,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         }
 
-        public async Task CommitChanges()
-        {
-            await _connection.SaveChangesAsync();
-        }
+        
         //public bool RemoveCliente(int id) { }
         // public bool AtualizaCliente(int id) { }
         //public bool AtualizarDadoCliente(int id, string opcao) { }

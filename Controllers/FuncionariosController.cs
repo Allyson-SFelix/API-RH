@@ -9,20 +9,26 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
     [Route("api/funcionarios")]
     public class FuncionariosController : ControllerBase
     {
-        private readonly IFuncionario clientesLojaFisica;
+        /* Cada atributo relaciona com tabela do banco diferente,
+         * variando também as suas funções de acessos
+         */
+        private readonly IFuncionario funcionarioRep;
 
-        public FuncionariosController(IFuncionario clientesLojaFisica)
+        private readonly ISetores setoresRep;
+
+        public FuncionariosController(IFuncionario funcionarios, ISetores setores)
         {
-            this.clientesLojaFisica = clientesLojaFisica ?? throw new ArgumentNullException(nameof(clientesLojaFisica));
+            this.funcionarioRep = funcionarios ?? throw new ArgumentNullException(nameof(funcionarios));
+            this.setoresRep = setores ?? throw new ArgumentNullException(nameof(setores));
         }
 
         [HttpGet]
         [Route("/listaFuncionarios")]
         public async Task<IActionResult> Get(string nomeSetor) {
-            List<FuncionarioResponse> clientes= await clientesLojaFisica.ListarFuncionario(nomeSetor);
-            if (clientes != null)
+            List<FuncionarioResponse> funcionarios= await funcionarioRep.ListarFuncionario(nomeSetor);
+            if (funcionarios != null)
             {
-                return Ok(clientes); //return como json
+                return Ok(funcionarios); //return como json
             }
             else
             {
@@ -34,7 +40,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("/unitFuncionario")]
         public async Task<IActionResult> GetUnit(string cpf)
         {
-            FuncionarioResponse funcionario = await clientesLojaFisica.PegarFuncionario(cpf);
+            FuncionarioResponse funcionario = await funcionarioRep.PegarFuncionario(cpf);
             if (funcionario != null)
             {
                 return Ok(funcionario); //retorna como json
@@ -50,7 +56,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         public async Task<IActionResult> Post([FromBody]FuncionarioRequest funcionario)
         {   
 
-            if(await clientesLojaFisica.SalvarFuncionario(funcionario))
+            if(await funcionarioRep.SalvarFuncionario(funcionario))
             {
                 return Ok("Salvo com sucesso: Nome = "+ funcionario.nome);
             }

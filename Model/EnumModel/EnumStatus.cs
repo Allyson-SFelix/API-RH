@@ -1,8 +1,9 @@
 ﻿namespace API_ARMAZENA_FUNCIONARIOS.Model.EnumModel
 {
-    public enum EnumStatus : byte
+    public enum EnumStatus 
     {
-        ativo = 1,
-        nao_ativo = 2
+        ativo,
+        nao_ativo 
     }
+
 }

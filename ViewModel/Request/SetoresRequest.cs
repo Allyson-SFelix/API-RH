@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Text.Json.Serialization;
 using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 
-namespace API_ARMAZENA_FUNCIONARIOS.Model.Tables
+namespace API_ARMAZENA_FUNCIONARIOS.ViewModel.Request
 {
-    [Table("setores")]
-    public class ModelSetores
+    public class SetoresRequest
     {
-        [Key]
         public int id { get; set; }
 
         public string nome { get; set; }
@@ -16,14 +13,14 @@ namespace API_ARMAZENA_FUNCIONARIOS.Model.Tables
 
         public string localizacao { get; set; }
 
-        public string status { get; set; }
+        public EnumStatus status { get; set; }
 
-        public ModelSetores(string nome, int qtd_funcionarios, string localizacao, string status)
+        [JsonConstructor]
+        public SetoresRequest(string nome, int qtd_funcionarios, string localizacao)
         {
             this.nome = nome;
             this.qtd_funcionarios = qtd_funcionarios;
             this.localizacao = localizacao;
-            this.status = status;
         }
     }
 }

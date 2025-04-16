@@ -26,6 +26,9 @@ builder.Configuration["JwtSettings:SecretKey"] = KeySecret;
 */
 
 
+
+
+
 // pegar do user-secret a string de conexão
 //dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=IP;Port=Port;Database=BancoNome;User Id=User;Password=Senha;"
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -40,7 +43,8 @@ DbConennectionDapper.SetConnection(connectionString);
 
 
 // injeção que toda vez que for acionado será instanciado um novo objeto dessa classe que utiliza essa interface
-builder.Services.AddScoped<IFuncionario,RepositoryFuncionario>(); 
+builder.Services.AddScoped<IFuncionario,RepositoryFuncionario>();
+builder.Services.AddScoped<ISetores,RepositorySetores>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
