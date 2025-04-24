@@ -81,19 +81,22 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
             int idSetor =await ServicesRepository.VerificaSetor(nome);
+            if (idSetor == 0)
+            {
+                return null!;
+            }
             try
             {
                 using (var conn = DbConennectionDapper.GetStringConnection())
                 {
                     string sql = "SELECT id,nome,qtd_funcionarios,localizacao,status FROM setores WHERE id=@id";
 
-                    var setoreResult = await conn.QueryFirstAsync<SetoresResponse>(sql, new { id = idSetor });
-                    SetoresResponse setor = new SetoresResponse(setoreResult.id, setoreResult.nome,setoreResult.qtd_funcionarios,setoreResult.localizacao,setoreResult.status);
-                    if (setor == null)
+                    var setoreResult = await conn.QueryFirstOrDefaultAsync<SetoresResponse>(sql, new { id = idSetor });
+                    if (setoreResult == null)
                     {
                         return null!;
                     }
-                    return setor;
+                    return setoreResult;
 
                 };
             }catch(Exception ex)

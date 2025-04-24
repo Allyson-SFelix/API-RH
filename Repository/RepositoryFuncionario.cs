@@ -41,8 +41,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 try
                 {
-                    string query = "SELECT f.* FROM funcionarios  f" +
-                        " WHERE id_setor =@id  AND f.status = @status::enum_status"; 
+                    string query = "SELECT f.*,s.nome AS nome_setor f FROM funcionarios " +
+                        " JOIN setores s ON f.id_setor=s.id"+
+                        " WHERE f.id_setor =@id  AND f.status = @status::enum_status"; 
                     //deve haver esse casting para infomrar que garante ser desse tipo de enum que é enum
 
                     var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor, status=EnumStatus.ativo.ToString()});
