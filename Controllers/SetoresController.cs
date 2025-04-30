@@ -43,6 +43,19 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         }
 
+        [HttpPut]
+        [Route("/atualizarSetor")]
+        public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo,string nomeSetor)
+        {
+            
+            if (await setoresRep.AtualizarSetor(nomeSetor,setorNovo))
+            {
+                return Ok(new { Message = "Salvo com sucesso" });
+            }
+            return BadRequest(new { Message = "Nao foi salvo" });
+
+        }
+
 
 
     }

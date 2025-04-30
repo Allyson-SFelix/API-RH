@@ -8,7 +8,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.IRepository
     {
         public Task<bool> SalvarSetor(SetoresRequest setor);
 
-        public Task<bool> AtualizarSetor(string nome);
+        public Task<bool> AtualizarSetor(string nome,SetoresRequest setorNovo);
 
         public Task<bool> RemoverSetor(string nome);
 

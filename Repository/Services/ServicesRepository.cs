@@ -1,5 +1,6 @@
 ﻿using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext;
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
+using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using Dapper;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
@@ -19,6 +20,26 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
                 var resultQuery =await connection.QuerySingleOrDefaultAsync<int>(query, new { Nome = nome });
                 return resultQuery;
             }
+        }
+
+
+        /// <summary>
+        /// Recebe nome do setor e retorna se existe ou nao o setor buscado pelo nome
+        /// </summary>
+        /// <param name="verificaSetorExiste">Verifica Setor Existe</param>
+        /// <returns> true existe setor ativo, false nao existe esse setor ou nao esta ativo com esse nome</returns>
+        public static async Task<bool> VerificarSetorExiste(string nome)
+        {
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                string sql = "SELECT status FROM setores WHERE nome=@nome AND status=@status::enum_status";
+                var result = await conn.QueryFirstOrDefaultAsync<string>(sql, new { nome = nome, status=EnumStatus.ativo.ToString() });
+                if (result == "")
+                {
+                    return false;
+                }
+                return true;
+            };
         }
 
         /// <summary>

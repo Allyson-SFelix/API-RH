@@ -29,20 +29,13 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 return false;
             }
 
-            using (var conn = DbConennectionDapper.GetStringConnection())
-            {
-                string sql = "SELECT status FROM setores WHERE nome=@nome" ;
-                var result = await conn.QueryFirstOrDefaultAsync<string>(sql, new { nome = setor.nome });
-                //if (result == null) // nao existe
-              //  {
-              //      return false;
-               /*else if(result == EnumStatus.nao_ativo.ToString()) //existe mas nao ativo
-                {
-                    
-                } */
-            };
 
-            /*problema nesse bloco*/
+            bool statusSetor = await ServicesRepository.VerificarSetorExiste(setor.nome);
+            if (!statusSetor)
+            {
+                return false;
+            }
+
             try
             {
                Debug.WriteLine("dentro try");
@@ -63,16 +56,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
         }
-        public Task<bool> AtualizarSetor(string nome) 
-        {
-            return null!;
-        }
-
-        public Task<bool> RemoverSetor(string nome) 
-        {
-            return null!;
-        }
-
         public async Task<SetoresResponse> PegarSetor(string nome) 
         {
             if(nome == null)
@@ -107,6 +90,42 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
         }
+        public async Task<bool> AtualizarSetor(string nome,SetoresRequest setorNovo) 
+        {
+            if (nome == null)
+            {
+                return false;
+            }
+
+            int id_setor = await ServicesRepository.VerificaSetor(nome);
+            if(id_setor == 0 && !(await ServicesRepository.VerificarSetorExiste(nome)) )
+            {
+                return false;
+            }
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "UPDATE setores SET nome=@nomeNovo , qtd_funcionarios=@qtdFunc, localizacao=@local" +
+                    " WHERE id=@id";
+
+                    await conn.QueryAsync(query, new { id = id_setor, nomeNovo = setorNovo.nome, qtdFunc = setorNovo.qtd_funcionarios, local = setorNovo.localizacao });
+                    
+                    return true;
+                
+                }catch (Exception ex) 
+                { 
+                    Console.WriteLine(ex.Message);
+                    return false;
+                }
+            }
+        }
+
+        public Task<bool> RemoverSetor(string nome) 
+        {
+            return null!;
+        }
+
 
     }
 }
