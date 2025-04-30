@@ -89,14 +89,15 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 using (var conn = DbConennectionDapper.GetStringConnection())
                 {
-                    string sql = "SELECT id,nome,qtd_funcionarios,localizacao,status FROM setores WHERE id=@id";
+                    string sql = "SELECT id,nome,qtd_funcionarios,localizacao FROM setores"+ 
+                                 " WHERE id=@id AND status=@status::enum_status";
 
-                    var setoreResult = await conn.QueryFirstOrDefaultAsync<SetoresResponse>(sql, new { id = idSetor });
-                    if (setoreResult == null)
+                    var setorResult = await conn.QueryFirstOrDefaultAsync<SetoresResponse>(sql, new { id = idSetor , status=EnumStatus.ativo.ToString()});
+                    if (setorResult == null)
                     {
                         return null!;
                     }
-                    return setoreResult;
+                    return setorResult;
 
                 };
             }catch(Exception ex)

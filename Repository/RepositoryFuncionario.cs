@@ -41,17 +41,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 try
                 {
-                    string query = "SELECT f.*,s.nome AS nome_setor f FROM funcionarios " +
+                    string query = "SELECT f.*,s.nome AS nome_setor FROM funcionarios f " +
                         " JOIN setores s ON f.id_setor=s.id"+
                         " WHERE f.id_setor =@id  AND f.status = @status::enum_status"; 
                     //deve haver esse casting para infomrar que garante ser desse tipo de enum que é enum
 
-                    var funcionarios = await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor, status=EnumStatus.ativo.ToString()});
+                    List<FuncionarioResponse> funcionarios = (await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor, status=EnumStatus.ativo.ToString()})).ToList();
                     if (funcionarios ==null)
                     {
                         return null!;
                     }
-                    return funcionarios.ToList();
+                    return funcionarios;
                 }
                 catch (Exception ex)
                 {
@@ -76,7 +76,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 try
                 {
-                    string query = "SELECT f.* FROM funcionarios f" +
+                    string query = "SELECT f.*,s.nome AS nome_setor FROM funcionarios f" +
+                        " JOIN setores s ON f.id_setor=s.id "+
                         " WHERE cpf=@Cpf AND f.status=@status::enum_status";
                     funcionario = await conn.QuerySingleAsync<FuncionarioResponse>(query, new { Cpf = cpf, status = EnumStatus.ativo.ToString() });
                     if (funcionario == null)
