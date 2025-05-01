@@ -12,7 +12,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.ViewModel.Response
 
         public string? localizacao { get; set; }
 
-//        public EnumStatus status { get; set; }  -> VAI HAVER APENAS A VERIFICACAO DO STATUS NO MOMENTO DA BUSCA,EDICAO E ALTERACAO NA REMOCAO
+        public EnumStatus status { get; set; } 
 
         public SetoresResponse() { }
         public SetoresResponse(int id, string nome, int qtd_funcionarios, string localizacao)

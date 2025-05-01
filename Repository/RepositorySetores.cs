@@ -10,6 +10,7 @@ using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Repository.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 namespace API_ARMAZENA_FUNCIONARIOS.Repository
 {
     public class RepositorySetores : ISetores
@@ -58,7 +59,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
         public async Task<SetoresResponse> PegarSetor(string nome) 
         {
-            if(nome == null)
+            if(nome == "")
             {
                 return null!;
             }
@@ -92,7 +93,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
         public async Task<bool> AtualizarSetor(string nome,SetoresRequest setorNovo) 
         {
-            if (nome == null)
+            if (nome == "")
             {
                 return false;
             }
@@ -121,11 +122,62 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
         }
 
-        public Task<bool> RemoverSetor(string nome) 
+        public async Task<bool> RemoverSetor(string nome) 
         {
-            return null!;
+            bool setorExiste = (await ServicesRepository.VerificarSetorExiste(nome));
+
+            if (nome == "" || !setorExiste)
+            {
+                return false;
+            }
+
+            int setorId = await ServicesRepository.VerificaSetor(nome);
+            if(setorId == 0)
+            {
+                return false;
+            }
+
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "UPDATE setores SET status=@statusNovo::enum_status"+ 
+                                   " WHERE id=@idSetor AND status=@status::enum_status ";
+                    await conn.QueryAsync(query,new {statusNovo= EnumStatus.nao_ativo.ToString(), idSetor=setorId , status=EnumStatus.ativo.ToString()});
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception: "+e.Message);
+                    return false;
+                }
+            }
+
+
         }
 
+
+        public async Task<List<SetoresResponse>> ListarSetores()
+        {
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "SELECT * FROM setores ORDER BY id ASC";
+                    List<SetoresResponse> lista = (await conn.QueryAsync<SetoresResponse>(query)).ToList();
+                    if(lista == null)
+                    {
+                        return null!;
+                    }
+                    return lista;
+
+                }catch(Exception e)
+                {
+                    Console.WriteLine("Exception: "+e.Message);
+                    return null!;
+                }
+            }
+        }
 
     }
 }

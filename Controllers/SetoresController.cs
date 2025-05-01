@@ -30,6 +30,20 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             return Ok(setor);
         }
 
+
+        [HttpGet]
+        [Route("/listarSetores")]
+        public async Task<IActionResult> GetSetores()
+        {
+            List<SetoresResponse> lista = await setoresRep.ListarSetores();
+            if ( lista != null)
+            {
+                return Ok(lista);
+            }
+
+            return BadRequest(new { Message = "Não existem Setores a serem Listados" });
+        }
+
         [HttpPost]
         [Route("/salvarSetor")]
         public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) {
@@ -56,7 +70,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         }
 
+        [HttpDelete]
+        [Route("/removerSetor")]
+        public async Task<IActionResult> RemoverSetor(string nome)
+        {
+            if(await setoresRep.RemoverSetor(nome))
+            {
+                return Ok(new {Message = "Removido com sucesso"});
+            }
 
+            return BadRequest(new { Message = "Nao Removido - Nao existe " });
+        }
 
     }
 }

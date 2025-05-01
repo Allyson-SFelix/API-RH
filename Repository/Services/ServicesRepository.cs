@@ -32,9 +32,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
         {
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
-                string sql = "SELECT status FROM setores WHERE nome=@nome AND status=@status::enum_status";
-                var result = await conn.QueryFirstOrDefaultAsync<string>(sql, new { nome = nome, status=EnumStatus.ativo.ToString() });
-                if (result == "")
+                string sql = "SELECT id FROM setores WHERE nome=@nome AND status=@status::enum_status";
+                var result = await conn.QueryFirstOrDefaultAsync<int>(sql, new { nome = nome, status=EnumStatus.ativo.ToString() });
+                if (result == 0)
                 {
                     return false;
                 }

@@ -13,5 +13,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.IRepository
         public Task<bool> RemoverSetor(string nome);
 
         public Task<SetoresResponse> PegarSetor(string nome);
+
+        public Task<List<SetoresResponse>> ListarSetores();
     }
 }
