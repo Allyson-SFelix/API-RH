@@ -53,7 +53,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         [HttpPost]
         [Route("/inserirFuncionario")]
-        public async Task<IActionResult> Post([FromBody]FuncionarioRequest funcionario)
+        public async Task<IActionResult> PostInserir([FromBody]FuncionarioRequest funcionario)
         {   
 
             if(await funcionarioRep.SalvarFuncionario(funcionario))

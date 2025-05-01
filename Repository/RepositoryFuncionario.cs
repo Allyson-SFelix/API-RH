@@ -9,6 +9,7 @@ using Dapper;
 using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Repository.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository
 {
@@ -105,6 +106,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
             // verifico se o nome do setor é válido
             int id_Setor = await ServicesRepository.VerificaSetor(funcionario.setorNome);
+            if (id_Setor == 0)
+            {
+                return false;
+            }
+
+            // verificar se o cpf é unico (se existe algum igual ja salvo)
+            bool cpfUnico = await ServicesRepository.CpfUniq(funcionario.cpf);
+            if(!cpfUnico)
+            {
+                return false; 
+            }
 
                 try
                 {
@@ -121,7 +133,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Erro em SalvarCliente: {ex.Message}");
-                    Console.WriteLine("Erro ao salvar no banco: " + ex.InnerException?.Message);
                      return false;
                 }
 

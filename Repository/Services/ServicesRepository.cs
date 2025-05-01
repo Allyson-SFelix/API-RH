@@ -11,13 +11,13 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
         /// Recebe nome do setor e retorna seu id se existir e 0 se nao existir
         /// </summary>
         /// <param name="verificaSetor">Verifica Setor</param>
-        /// <returns>ID diferente de 0, caso 0 não existe</returns>
+        /// <returns>ID diferente de 0, caso 0 não existe </returns>
         public static async Task<int> VerificaSetor(string nome)
         {
             using (var connection = DbConennectionDapper.GetStringConnection())
             {
                 string query = "SELECT id FROM setores WHERE nome=@Nome";
-                var resultQuery =await connection.QuerySingleOrDefaultAsync<int>(query, new { Nome = nome });
+                var resultQuery =await connection.QuerySingleOrDefaultAsync<int>(query, new { Nome = nome});
                 return resultQuery;
             }
         }
@@ -50,6 +50,33 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
         public static async Task CommitChanges(DbConnectionContext _connection)
         {
               await _connection.SaveChangesAsync();
+        }
+
+
+        public static async Task<bool> CpfUniq(string cpf)
+        {
+            if (cpf == "")
+            {
+                return false;
+            }
+
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "SELECT id FROM funcionarios WHERE cpf=@cpfEntrada";
+                    int result = await conn.QueryFirstOrDefaultAsync<int>(query, new { cpfEntrada= cpf });
+                    if(result != 0)
+                    {
+                        return false;
+                    }
+                    return true;
+                }catch(Exception e)
+                {
+                    Console.WriteLine("Exception: "+e.Message);
+                    return false;
+                }
+            }
         }
     }
 }
