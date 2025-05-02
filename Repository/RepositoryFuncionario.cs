@@ -118,28 +118,50 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 return false; 
             }
 
-                try
-                {
+            try
+            {
 
-                    ModelFuncionario newFuncionario = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
+                ModelFuncionario newFuncionario = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
                         funcionario.cpf,id_Setor,funcionario.salario,funcionario.dataNascimento,EnumStatus.ativo);
                     
-                    await  _connection.Funcionario.AddAsync(newFuncionario);
+                await  _connection.Funcionario.AddAsync(newFuncionario);
                     
-                    await ServicesRepository.CommitChanges(this._connection);
+                await ServicesRepository.CommitChanges(this._connection);
                     
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Erro em SalvarCliente: {ex.Message}");
-                     return false;
-                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro em SalvarCliente: {ex.Message}");
+                return false;
+            }
 
         }
 
         
-        //public bool RemoveCliente(int id) { }
+        public async Task<bool> RemoveCliente(string cpf) 
+        {
+            if(cpf == "")
+            {
+                return false;
+            }
+
+            using(var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "UPDATE funcionarios SET status=@status::enum_status WHERE cpf=@cpfEntrada";
+                    await conn.QueryAsync(query, new {cpfEntrada=cpf, status=EnumStatus.nao_ativo.ToString()});
+                    return true;
+
+                }catch(Exception e)
+                {
+                    Console.WriteLine("Exception: " + e.Message);
+                    return false;
+                }
+            }
+            
+        }
         // public bool AtualizaCliente(int id) { }
         //public bool AtualizarDadoCliente(int id, string opcao) { }
     }

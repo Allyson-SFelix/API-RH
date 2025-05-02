@@ -48,7 +48,7 @@ builder.Services.AddDbContext<DbConnectionContext>(options =>
 
 
 // passo a string de conexao para a classe do Dapper
-DbConennectionDapper.SetConnection(connectionString);
+DbConennectionDapper.SetConnection(connectionString!);
 
 
 

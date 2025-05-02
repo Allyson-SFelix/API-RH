@@ -62,5 +62,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             }
             return BadRequest(new { mensagem="Valor inadequados para serem salvos" });
         }
+
+
+        [HttpDelete]
+        [Route("/removerFuncionario")]
+        public async Task<IActionResult> RemoverFuncionario(string cpf)
+        {
+            if(await funcionarioRep.RemoveCliente(cpf))
+            {
+                return Ok("Removido com sucesso");
+            }
+            return BadRequest(new { Message="Remocao nao realizada" });
+        }
     }
 }
