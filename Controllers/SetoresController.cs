@@ -19,7 +19,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         }
 
         [HttpGet]
-        [Route("/PegarSetor")]
+        [Route("PegarSetor")]
         public async Task<IActionResult> GetSetor(string nome) 
         {
             SetoresResponse setor = await setoresRep.PegarSetor(nome);
@@ -32,7 +32,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
 
         [HttpGet]
-        [Route("/listarSetores")]
+        [Route("listarSetores")]
         public async Task<IActionResult> GetSetores()
         {
             List<SetoresResponse> lista = await setoresRep.ListarSetores();
@@ -45,10 +45,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         }
 
         [HttpPost]
-        [Route("/salvarSetor")]
+        [Route("salvarSetor")]
         public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) {
-            ModelSetores setorModel = new ModelSetores(setor.nome, setor.qtd_funcionarios, setor.localizacao,EnumStatus.ativo);
-
+            
             if(await setoresRep.SalvarSetor(setor))
             {
                 return Ok(new { Message = "Salvo com sucesso" });
@@ -58,7 +57,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         }
 
         [HttpPut]
-        [Route("/atualizarSetor")]
+        [Route("atualizarSetor")]
         public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo,string nomeSetor)
         {
             
@@ -71,7 +70,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         }
 
         [HttpDelete]
-        [Route("/removerSetor")]
+        [Route("removerSetor")]
         public async Task<IActionResult> RemoverSetor(string nome)
         {
             if(await setoresRep.RemoverSetor(nome))

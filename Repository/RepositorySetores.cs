@@ -32,20 +32,20 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
 
             bool statusSetor = await ServicesRepository.VerificarSetorExiste(setor.nome);
-            if (!statusSetor)
+            if (statusSetor)
             {
                 return false;
             }
 
             try
             {
-               Debug.WriteLine("dentro try");
+              
                ModelSetores setorModel = new ModelSetores(setor.nome, setor.qtd_funcionarios, setor.localizacao, EnumStatus.ativo);
 
-                Debug.WriteLine("add no banco");
+                
                 await _connection.Setores.AddAsync(setorModel);
 
-                Debug.WriteLine("commit no banco");
+                
                 await ServicesRepository.CommitChanges(this._connection);
                 return true;
 

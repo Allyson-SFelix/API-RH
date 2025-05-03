@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    
+    <title>Home</title>
+</head>
+<body>
+    <div class="entradasNovoSetor">
+        <input type="text" id="nomeSetor" placeholder="Digite o nome do Setor">
+        <input type="text" id="qtdFuncionarios" placeholder="Digite a quantidade de funcionarios no setor">
+        <input type="text" id="localizacao" placeholder="Digite a localizacao">
+       
+        <button id="submitPegarNomeSetor">SUBMIT</button>
+    </div>
+
+    <div id="tabela">
+        <table>
+            <thead>
+                <tr>
+                   <th>Nome do Setor</th>
+                </tr>
+           </thead>
+
+            <tbody id="mostrarNomeSetor">
+            </tbody>
+        </table>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

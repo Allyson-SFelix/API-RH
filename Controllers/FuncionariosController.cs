@@ -23,7 +23,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         }
 
         [HttpGet]
-        [Route("/listaFuncionarios")]
+        [Route("listaFuncionarios")]
         public async Task<IActionResult> Get(string nomeSetor) {
             List<FuncionarioResponse> funcionarios= await funcionarioRep.ListarFuncionario(nomeSetor);
             if (funcionarios.Count() >0)
@@ -37,7 +37,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         }
 
         [HttpGet]
-        [Route("/unitFuncionario")]
+        [Route("unitFuncionario")]
         public async Task<IActionResult> GetUnit(string cpf)
         {
             FuncionarioResponse funcionario = await funcionarioRep.PegarFuncionario(cpf);
@@ -52,7 +52,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         } 
 
         [HttpPost]
-        [Route("/inserirFuncionario")]
+        [Route("inserirFuncionario")]
         public async Task<IActionResult> PostInserir([FromBody]FuncionarioRequest funcionario)
         {   
 
@@ -65,7 +65,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
 
         [HttpDelete]
-        [Route("/removerFuncionario")]
+        [Route("removerFuncionario")]
         public async Task<IActionResult> RemoverFuncionario(string cpf)
         {
             if(await funcionarioRep.RemoveCliente(cpf))

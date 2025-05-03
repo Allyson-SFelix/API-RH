@@ -1,0 +1,18 @@
+*{
+    padding:0;
+    margin: 0;
+}
+
+.entradasNovoSetor{
+    width: 200px;
+    height: 100px;
+    padding: 10px;
+    /*align-content: end;*/
+    display: flexbox;
+}
+
+#tabela{
+    padding-top: 5%;
+    align-items: center;
+    justify-content: center;
+}

@@ -70,6 +70,14 @@ if (app.Environment.IsDevelopment())
     app.MapSwagger();
 }
 
+// Permite qualquer um acessar qualquer metodo e de qualquer origem 
+app.UseCors(builder =>
+        builder.AllowAnyOrigin()  // Permite todas as origens ou builder.WithOrigins("https://meudominio.com") 
+               .AllowAnyMethod()  // Permite qualquer método 
+               .AllowAnyHeader() // Permite qualquer cabecalho (tipo de conteudo,token, ...)
+);  
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
