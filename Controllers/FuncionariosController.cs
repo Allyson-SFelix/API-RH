@@ -55,7 +55,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("inserirFuncionario")]
         public async Task<IActionResult> PostInserir([FromBody]FuncionarioRequest funcionario)
         {   
-
             if(await funcionarioRep.SalvarFuncionario(funcionario))
             {
                 return Ok("Salvo com sucesso: Nome = "+ funcionario.nome);
