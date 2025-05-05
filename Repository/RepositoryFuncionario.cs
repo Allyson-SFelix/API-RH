@@ -43,12 +43,12 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 try
                 {
                     string query = "SELECT f.*,s.nome AS nome_setor FROM funcionarios f " +
-                        " JOIN setores s ON f.id_setor=s.id"+
-                        " WHERE f.id_setor =@id  AND f.status = @status::enum_status"; 
+                        " JOIN setores s ON f.id_setor=s.id" +
+                        " WHERE f.id_setor =@id  AND f.status = @status::enum_status";
                     //deve haver esse casting para infomrar que garante ser desse tipo de enum que é enum
 
-                    List<FuncionarioResponse> funcionarios = (await conn.QueryAsync<FuncionarioResponse>(query,new {id=id_Setor, status=EnumStatus.ativo.ToString()})).ToList();
-                    if (funcionarios ==null)
+                    List<FuncionarioResponse> funcionarios = (await conn.QueryAsync<FuncionarioResponse>(query, new { id = id_Setor, status = EnumStatus.ativo.ToString() })).ToList();
+                    if (funcionarios == null)
                     {
                         return null!;
                     }
@@ -71,14 +71,14 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
 
-            FuncionarioResponse  funcionario = null!;
-            
+            FuncionarioResponse funcionario = null!;
+
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
                 {
                     string query = "SELECT f.*,s.nome AS nome_setor FROM funcionarios f" +
-                        " JOIN setores s ON f.id_setor=s.id "+
+                        " JOIN setores s ON f.id_setor=s.id " +
                         " WHERE cpf=@Cpf AND f.status=@status::enum_status";
                     funcionario = await conn.QuerySingleAsync<FuncionarioResponse>(query, new { Cpf = cpf, status = EnumStatus.ativo.ToString() });
                     if (funcionario == null)
@@ -87,17 +87,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                     }
                     return funcionario;
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Pegar Funcionario: "+ex.Message); 
+                    Console.WriteLine("Pegar Funcionario: " + ex.Message);
                     return null!;
                 }
-            
+
             }
         }
 
         public async Task<bool> SalvarFuncionario([FromBody] FuncionarioRequest funcionario)
-        {  
+        {
             // verifico os dados que chegam
             if (funcionario == null)
             {
@@ -113,21 +113,21 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
             // verificar se o cpf é unico (se existe algum igual ja salvo)
             bool cpfUnico = await ServicesRepository.CpfUniq(funcionario.cpf);
-            if(!cpfUnico)
+            if (!cpfUnico)
             {
-                return false; 
+                return false;
             }
 
             try
             {
 
-                ModelFuncionario newFuncionario = new ModelFuncionario(funcionario.nome,funcionario.dataEntrada,
-                        funcionario.cpf,id_Setor,funcionario.salario,funcionario.dataNascimento,EnumStatus.ativo);
-                    
-                await  _connection.Funcionario.AddAsync(newFuncionario);
-                    
+                ModelFuncionario newFuncionario = new ModelFuncionario(funcionario.nome, funcionario.dataEntrada,
+                        funcionario.cpf, id_Setor, funcionario.salario, funcionario.dataNascimento, EnumStatus.ativo);
+
+                await _connection.Funcionario.AddAsync(newFuncionario);
+
                 await ServicesRepository.CommitChanges(this._connection);
-                    
+
                 return true;
             }
             catch (Exception ex)
@@ -138,31 +138,85 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         }
 
-        
-        public async Task<bool> RemoveCliente(string cpf) 
+
+        public async Task<bool> RemoveCliente(string cpf)
         {
-            if(cpf == "")
+            if (cpf == "")
             {
                 return false;
             }
 
-            using(var conn = DbConennectionDapper.GetStringConnection())
+            using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
                 {
                     string query = "UPDATE funcionarios SET status=@status::enum_status WHERE cpf=@cpfEntrada";
-                    await conn.QueryAsync(query, new {cpfEntrada=cpf, status=EnumStatus.nao_ativo.ToString()});
+                    await conn.QueryAsync(query, new { cpfEntrada = cpf, status = EnumStatus.nao_ativo.ToString() });
                     return true;
 
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine("Exception: " + e.Message);
                     return false;
                 }
             }
-            
+
         }
-        // public bool AtualizaCliente(int id) { }
-        //public bool AtualizarDadoCliente(int id, string opcao) { }
+        public async Task<bool> atualizarFunionario(string cpf, FuncionarioRequest funcionarioNovo)
+        {
+            if (cpf == "")
+            {
+                return false;
+            }
+
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "UPDATE funcionarios" +
+                        " SET nome=@NovoNome,cpf=@NovoCPF,dataentrada=@NovaDataEntrada,id_setor=@setorID,salario=@NovoSalario,data_nascimento=@NovaDataNascimento" +
+                        " WHERE cpf=@cpfRecebido";
+                    int setorId = await ServicesRepository.VerificaSetor(funcionarioNovo.setorNome);
+
+                    string novoCpf = funcionarioNovo.cpf;
+
+                    if (setorId == 0)
+                    {
+                        return false;
+                    }
+
+                    if (cpf == funcionarioNovo.cpf)
+                    {
+                        novoCpf = cpf;
+                    }
+                    else if (!(await ServicesRepository.CpfUniq(funcionarioNovo.cpf)))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        novoCpf = funcionarioNovo.cpf;
+                    }
+
+                    await conn.QueryAsync(query, new
+                    {
+                        NovoNome = funcionarioNovo.nome,
+                        NovoCpf = novoCpf,
+                        NovaDataEntrada = funcionarioNovo.dataEntrada,
+                        setorID = setorId,
+                        NovoSalario = funcionarioNovo.salario,
+                        NovaDataNascimento = funcionarioNovo.dataNascimento,
+                        cpfRecebido = cpf
+                    });
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception: " + e.Message);
+                    return false;
+                }
+            }
+        }
     }
 }

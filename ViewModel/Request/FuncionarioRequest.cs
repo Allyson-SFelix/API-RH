@@ -24,6 +24,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.ViewModel.Request
             this.dataNascimento = dataNascimento;
             this.dataEntrada = dataEntrada;
         }
+
+       
     }
 }
 

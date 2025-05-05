@@ -9,5 +9,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.IRepository
         public Task<FuncionarioResponse> PegarFuncionario(string cpf);
         public Task<bool> SalvarFuncionario(FuncionarioRequest funcionario);
         public Task<bool> RemoveCliente(string cpf);
+        public Task<bool> atualizarFunionario(string cpf, FuncionarioRequest funcionarioNovo);
     }
 }

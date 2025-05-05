@@ -31,15 +31,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
 
-            bool statusSetor = await ServicesRepository.VerificarSetorExiste(setor.nome);
-            if (statusSetor)
+            if (await ServicesRepository.VerificarSetorExiste(setor.nome))
             {
                 return false;
             }
 
             try
             {
-              
+               if (setor.qtd_funcionarios < 0)
+               {
+                   return false;
+               }
                ModelSetores setorModel = new ModelSetores(setor.nome, setor.qtd_funcionarios, setor.localizacao, EnumStatus.ativo);
 
                 
@@ -132,10 +134,16 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
             int setorId = await ServicesRepository.VerificaSetor(nome);
-            if(setorId == 0)
+            if(setorId == 0 )
             {
                 return false;
             }
+
+            if (await ServicesRepository.QtdFuncionariosSetor(setorId)==-1)
+            {
+                return false;
+            }
+            
 
             using (var conn = DbConennectionDapper.GetStringConnection())
             {

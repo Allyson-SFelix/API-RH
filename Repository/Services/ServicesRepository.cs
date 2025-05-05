@@ -53,6 +53,12 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
         }
 
 
+
+        /// <summary>
+        /// Recebe o cpf e verifica se é único entre os funcionarios existente na tabela de funcionarios
+        /// </summary>
+        /// <param name="CpfUniq">Cpf Unico</param>
+        /// <returns> false para CPF Não único ou string vazia, retorna true se for CPF unico</returns>
         public static async Task<bool> CpfUniq(string cpf)
         {
             if (cpf == "")
@@ -75,6 +81,29 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
                 {
                     Console.WriteLine("Exception: "+e.Message);
                     return false;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Recebe o id do setor e retorna a quantidade
+        /// </summary>
+        /// <param name="QtdFuncionariosSetor">Quantidade de Funcionarios no Setor</param>
+        /// <returns> quantidade ou retorna -1 para determinar um erro</returns>
+        public static async Task<int> QtdFuncionariosSetor(int id){
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "SELECT qtd_funcionarios FROM setores WHERE id=@BuscaID";
+
+                    return await conn.QueryFirstOrDefault(query, new { BuscaID = id });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception: " + e.Message);
+                    return -1;
                 }
             }
         }

@@ -73,5 +73,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             }
             return BadRequest(new { Message="Remocao nao realizada" });
         }
+
+
+        [HttpPut]
+        [Route("atualizarFuncionario")]
+        public async Task<IActionResult> PutAtualizarFuncionario([FromBody] FuncionarioRequest funcionarioNovo,string cpf)
+        {
+            if(await funcionarioRep.atualizarFunionario(cpf,funcionarioNovo))
+            {
+                return Ok(new { Message = $"Funcionario\nCpf: {cpf} \natualizado com sucesso" });
+            }
+            return BadRequest(new { Message = "Não foi possível realizar a atualização do usuário" });
+        }
     }
 }
