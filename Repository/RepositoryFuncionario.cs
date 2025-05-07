@@ -203,10 +203,10 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                     {
                         NovoNome = funcionarioNovo.nome,
                         NovoCpf = novoCpf,
-                        NovaDataEntrada = funcionarioNovo.dataEntrada,
+                        NovaDataEntrada = funcionarioNovo.dataEntrada.ToDateTime(TimeOnly.MinValue),
                         setorID = setorId,
                         NovoSalario = funcionarioNovo.salario,
-                        NovaDataNascimento = funcionarioNovo.dataNascimento,
+                        NovaDataNascimento = funcionarioNovo.dataNascimento.ToDateTime(TimeOnly.MinValue),
                         cpfRecebido = cpf
                     });
                     return true;
