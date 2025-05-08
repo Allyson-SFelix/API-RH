@@ -38,11 +38,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
             try
             {
-               if (setor.qtd_funcionarios < 0)
-               {
-                   return false;
-               }
-               ModelSetores setorModel = new ModelSetores(setor.nome, setor.qtd_funcionarios, setor.localizacao, EnumStatus.ativo);
+               ModelSetores setorModel = new ModelSetores(setor.nome, 0, setor.localizacao, EnumStatus.ativo);
 
                 
                 await _connection.Setores.AddAsync(setorModel);
@@ -75,7 +71,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 using (var conn = DbConennectionDapper.GetStringConnection())
                 {
-                    string sql = "SELECT id,nome,qtd_funcionarios,localizacao FROM setores"+ 
+                    string sql = "SELECT id,nome,localizacao FROM setores"+ 
                                  " WHERE id=@id AND status=@status::enum_status";
 
                     var setorResult = await conn.QueryFirstOrDefaultAsync<SetoresResponse>(sql, new { id = idSetor , status=EnumStatus.ativo.ToString()});
@@ -109,10 +105,10 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             {
                 try
                 {
-                    string query = "UPDATE setores SET nome=@nomeNovo , qtd_funcionarios=@qtdFunc, localizacao=@local" +
+                    string query = "UPDATE setores SET nome=@nomeNovo ,  localizacao=@local" +
                     " WHERE id=@id";
 
-                    await conn.QueryAsync(query, new { id = id_setor, nomeNovo = setorNovo.nome, qtdFunc = setorNovo.qtd_funcionarios, local = setorNovo.localizacao });
+                    await conn.QueryAsync(query, new { id = id_setor, nomeNovo = setorNovo.nome, local = setorNovo.localizacao });
                     
                     return true;
                 

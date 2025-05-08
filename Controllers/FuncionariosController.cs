@@ -55,7 +55,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("inserirFuncionario")]
         public async Task<IActionResult> PostInserir([FromBody]FuncionarioRequest funcionario)
         {   
-            if(await funcionarioRep.SalvarFuncionario(funcionario))
+            if(await funcionarioRep.SalvarFuncionario(funcionario) && ModelState.IsValid)
             {
                 return Ok("Salvo com sucesso: Nome = "+ funcionario.nome);
             }
@@ -79,7 +79,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("atualizarFuncionario")]
         public async Task<IActionResult> PutAtualizarFuncionario([FromBody] FuncionarioRequest funcionarioNovo,string cpf)
         {
-            if(await funcionarioRep.atualizarFunionario(cpf,funcionarioNovo))
+            if(await funcionarioRep.atualizarFunionario(cpf,funcionarioNovo) && ModelState.IsValid)
             {
                 return Ok(new { Message = $"Funcionario\nCpf: {cpf} \natualizado com sucesso" });
             }

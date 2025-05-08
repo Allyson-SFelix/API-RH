@@ -48,7 +48,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("salvarSetor")]
         public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) {
             
-            if(await setoresRep.SalvarSetor(setor))
+            if(await setoresRep.SalvarSetor(setor) && ModelState.IsValid)
             {
                 return Ok(new { Message = "Salvo com sucesso" });
             }
@@ -61,7 +61,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo,string nomeSetor)
         {
             
-            if (await setoresRep.AtualizarSetor(nomeSetor,setorNovo))
+            if (await setoresRep.AtualizarSetor(nomeSetor,setorNovo) && ModelState.IsValid)
             {
                 return Ok(new { Message = "Salvo com sucesso" });
             }
