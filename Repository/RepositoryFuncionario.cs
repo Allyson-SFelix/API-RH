@@ -139,6 +139,35 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
 
 
+        public async Task<int> PegarIdFuncionario(string cpf)
+        {
+            if (string.IsNullOrEmpty(cpf))
+            {
+                return 0;
+            }
+            
+            using (var conn = DbConennectionDapper.GetStringConnection())
+            {
+                try
+                {
+                    string query = "SELECT id FROM funcionarios WHERE cpf=@NewCpf";
+
+                    int id = await conn.QueryFirstAsync<int>(query, new { NewCpf = cpf });
+                    if(id==0)
+                    {
+                        return 0;
+                    }
+                    return id;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Pegar ID Funcionario: " + ex.Message);
+                    return 0;
+                }
+            }
+        }
+
+
         public async Task<bool> RemoveCliente(string cpf)
         {
             if (cpf == "")
@@ -163,9 +192,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
         }
-        public async Task<bool> atualizarFunionario(string cpf, FuncionarioRequest funcionarioNovo)
+        public async Task<bool> atualizarFunionario(int id, FuncionarioRequest funcionarioNovo)
         {
-            if (cpf == "")
+            if (id==0)
             {
                 return false;
             }
@@ -176,38 +205,17 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 {
                     string query = "UPDATE funcionarios" +
                         " SET nome=@NovoNome,cpf=@NovoCPF,dataentrada=@NovaDataEntrada,id_setor=@setorID,salario=@NovoSalario,data_nascimento=@NovaDataNascimento" +
-                        " WHERE cpf=@cpfRecebido";
-                    int setorId = await ServicesRepository.VerificaSetor(funcionarioNovo.setorNome);
-
-                    string novoCpf = funcionarioNovo.cpf;
-
-                    if (setorId == 0)
-                    {
-                        return false;
-                    }
-
-                    if (cpf == funcionarioNovo.cpf)
-                    {
-                        novoCpf = cpf;
-                    }
-                    else if (!(await ServicesRepository.CpfUniq(funcionarioNovo.cpf)))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        novoCpf = funcionarioNovo.cpf;
-                    }
+                        " WHERE id=@idRecebido";
 
                     await conn.QueryAsync(query, new
                     {
                         NovoNome = funcionarioNovo.nome,
-                        NovoCpf = novoCpf,
+                        NovoCpf = funcionarioNovo.cpf,
                         NovaDataEntrada = funcionarioNovo.dataEntrada.ToDateTime(TimeOnly.MinValue),
-                        setorID = setorId,
+                        setorID = id,
                         NovoSalario = funcionarioNovo.salario,
                         NovaDataNascimento = funcionarioNovo.dataNascimento.ToDateTime(TimeOnly.MinValue),
-                        cpfRecebido = cpf
+                        idRecebido = id
                     });
                     return true;
                 }

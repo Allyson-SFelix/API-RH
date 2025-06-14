@@ -51,7 +51,6 @@ builder.Services.AddDbContext<DbConnectionContext>(options =>
 DbConennectionDapper.SetConnection(connectionString!);
 
 
-
 // injeção que toda vez que for acionado será instanciado um novo objeto dessa classe que utiliza essa interface
 builder.Services.AddScoped<IFuncionario,RepositoryFuncionario>();
 builder.Services.AddScoped<ISetores,RepositorySetores>();
@@ -75,7 +74,7 @@ app.UseCors(builder =>
         builder.AllowAnyOrigin()  // Permite todas as origens ou builder.WithOrigins("https://meudominio.com") 
                .AllowAnyMethod()  // Permite qualquer método 
                .AllowAnyHeader() // Permite qualquer cabecalho (tipo de conteudo,token, ...)
-);  
+);
 
 
 app.UseHttpsRedirection();

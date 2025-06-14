@@ -2,7 +2,7 @@
 {
     public class FuncionarioResponse
     {
-
+            
         public string? nome { get; set; }
         public DateTime dataEntrada { get; set; }
         public string? cpf { get; set; }

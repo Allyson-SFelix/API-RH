@@ -1,6 +1,7 @@
 ﻿using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
+using API_ARMAZENA_FUNCIONARIOS.ViewModel.Records;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         [HttpGet]
         [Route("PegarSetor")]
-        public async Task<IActionResult> GetSetor(string nome) 
+        public async Task<IActionResult> GetSetor([FromBody] SetorNome value) 
         {
-            SetoresResponse setor = await setoresRep.PegarSetor(nome);
+            SetoresResponse setor = await setoresRep.PegarSetor(value.nome);
             if (setor == null)
             {
                 return BadRequest(new {Message="Setor nao existe"});
@@ -58,10 +59,10 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         [HttpPut]
         [Route("atualizarSetor")]
-        public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo,string nomeSetor)
+        public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo, string nome)
         {
             
-            if (await setoresRep.AtualizarSetor(nomeSetor,setorNovo) && ModelState.IsValid)
+            if (await setoresRep.AtualizarSetor(nome,setorNovo) && ModelState.IsValid)
             {
                 return Ok(new { Message = "Salvo com sucesso" });
             }
@@ -71,9 +72,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         [HttpDelete]
         [Route("removerSetor")]
-        public async Task<IActionResult> RemoverSetor(string nome)
+        public async Task<IActionResult> RemoverSetor([FromBody] SetorNome value)
         {
-            if(await setoresRep.RemoverSetor(nome))
+            if(await setoresRep.RemoverSetor(value.nome))
             {
                 return Ok(new {Message = "Removido com sucesso"});
             }

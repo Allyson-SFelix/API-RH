@@ -1,0 +1,15 @@
+# docker-compose.yml
+version: "3.9"
+
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: api_rh
+    ports:
+      - "8080:5000"
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=${CONN_STRING}
