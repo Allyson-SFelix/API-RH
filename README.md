@@ -4,7 +4,7 @@ API RESTful construída em C# com ASP.NET Core para gestão de usuários, setore
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 * **ASP.NET Core**
 * **Entity Framework Core** (inserções)
@@ -18,9 +18,9 @@ API RESTful construída em C# com ASP.NET Core para gestão de usuários, setore
 
 ---
 
-## 📂 Endpoints Documentados
+##  Endpoints Documentados
 
-### 👥 Funcionários
+###  Funcionários
 
 > Todas as rotas protegidas por JWT (token no header)
 
@@ -56,7 +56,7 @@ API RESTful construída em C# com ASP.NET Core para gestão de usuários, setore
 
 ---
 
-### 🏢 Setores
+###  Setores
 
 > Todas as rotas protegidas por JWT
 
@@ -86,7 +86,7 @@ API RESTful construída em C# com ASP.NET Core para gestão de usuários, setore
 
 ---
 
-### 👤 Usuários
+###  Usuários
 
 > Algumas rotas são públicas, outras requerem autenticação com roles
 
