@@ -31,7 +31,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
 
-            if (await ServicesRepository.VerificarSetorExiste(setor.nome))
+            if (await RepositorioHelper.VerificarSetorExiste(setor.nome))
             {
                 return false;
             }
@@ -44,7 +44,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 await _connection.Setores.AddAsync(setorModel);
 
                 
-                await ServicesRepository.CommitChanges(this._connection);
+                await RepositorioHelper.CommitChanges(this._connection);
                 return true;
 
             }
@@ -62,7 +62,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 return null!;
             }
 
-            int idSetor =await ServicesRepository.VerificaSetor(nome);
+            int idSetor =await RepositorioHelper.VerificaSetor(nome);
             if (idSetor == 0)
             {
                 return null!;
@@ -96,8 +96,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 return false;
             }
 
-            int id_setor = await ServicesRepository.VerificaSetor(nome);
-            if(id_setor == 0 && !(await ServicesRepository.VerificarSetorExiste(nome)) )
+            int id_setor = await RepositorioHelper.VerificaSetor(nome);
+            if(id_setor == 0 && !(await RepositorioHelper.VerificarSetorExiste(nome)) )
             {
                 return false;
             }
@@ -122,20 +122,20 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<bool> RemoverSetor(string nome) 
         {
-            bool setorExiste = (await ServicesRepository.VerificarSetorExiste(nome));
+            bool setorExiste = (await RepositorioHelper.VerificarSetorExiste(nome));
 
             if (nome == "" || !setorExiste)
             {
                 return false;
             }
 
-            int setorId = await ServicesRepository.VerificaSetor(nome);
+            int setorId = await RepositorioHelper.VerificaSetor(nome);
             if(setorId == 0 )
             {
                 return false;
             }
 
-            if (await ServicesRepository.QtdFuncionariosSetor(setorId)==-1)
+            if (await RepositorioHelper.QtdFuncionariosSetor(setorId)==-1)
             {
                 return false;
             }

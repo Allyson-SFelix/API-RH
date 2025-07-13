@@ -5,7 +5,7 @@ using Dapper;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Repository.Services
 {
-    public static class ServicesRepository
+    public static class RepositorioHelper
     {
         /// <summary>
         /// Recebe nome do setor e retorna seu id se existir e 0 se nao existir

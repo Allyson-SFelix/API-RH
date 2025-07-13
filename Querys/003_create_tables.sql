@@ -22,6 +22,7 @@ CREATE TABLE users(
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(255) UNIQUE NOT NULL,
 	senha_hash TEXT NOT NULL,
+	salt TEXT NOT NULL,
 	status enum_status NOT NULL,
 	roles enum_roles NOT NULL
 );

@@ -31,7 +31,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         public async Task<List<FuncionarioResponse>> ListarFuncionario(string nomeSetor)
         {
             // verifico se o nome do setor é válido
-            int id_Setor = await ServicesRepository.VerificaSetor(nomeSetor);
+            int id_Setor = await RepositorioHelper.VerificaSetor(nomeSetor);
 
             if (id_Setor == 0)
             {
@@ -105,14 +105,14 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
             // verifico se o nome do setor é válido
-            int id_Setor = await ServicesRepository.VerificaSetor(funcionario.setorNome);
+            int id_Setor = await RepositorioHelper.VerificaSetor(funcionario.setorNome);
             if (id_Setor == 0)
             {
                 return false;
             }
 
             // verificar se o cpf é unico (se existe algum igual ja salvo)
-            bool cpfUnico = await ServicesRepository.CpfUniq(funcionario.cpf);
+            bool cpfUnico = await RepositorioHelper.CpfUniq(funcionario.cpf);
             if (!cpfUnico)
             {
                 return false;
@@ -126,7 +126,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
                 await _connection.Funcionario.AddAsync(newFuncionario);
 
-                await ServicesRepository.CommitChanges(this._connection);
+                await RepositorioHelper.CommitChanges(this._connection);
 
                 return true;
             }

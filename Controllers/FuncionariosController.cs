@@ -16,12 +16,12 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
          */
         private readonly IFuncionario funcionarioRep;
 
-        private readonly ISetores setoresRep;
+        //private readonly ISetores setoresRep;
 
-        public FuncionariosController(IFuncionario funcionarios, ISetores setores)
+        public FuncionariosController(IFuncionario funcionarios)//, ISetores setores)
         {
             this.funcionarioRep = funcionarios ?? throw new ArgumentNullException(nameof(funcionarios));
-            this.setoresRep = setores ?? throw new ArgumentNullException(nameof(setores));
+           // this.setoresRep = setores ?? throw new ArgumentNullException(nameof(setores));
         }
 
         [HttpGet]

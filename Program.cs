@@ -3,6 +3,7 @@ using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
 using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Repository;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
+using API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -41,7 +42,7 @@ builder.Services.AddDbContext<DbConnectionContext>(options =>
     o =>
     { //cadastrando os enums para serem semelhantes no uso
         o.MapEnum<EnumStatus>();
-      //  o.MapEnum<EnumRoles>();
+        o.MapEnum<EnumRoles>();
     } ) ); 
 
 
@@ -54,6 +55,8 @@ DbConennectionDapper.SetConnection(connectionString!);
 // injeção que toda vez que for acionado será instanciado um novo objeto dessa classe que utiliza essa interface
 builder.Services.AddScoped<IFuncionario,RepositoryFuncionario>();
 builder.Services.AddScoped<ISetores,RepositorySetores>();
+builder.Services.AddScoped<IRepositoryUsersLogin, RepositoryUsers>();
+builder.Services.AddScoped<IUsersLoginService, UsersLoginService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
