@@ -14,11 +14,11 @@ namespace API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin
             this.repositoryUsersLogin = usersLogin ?? throw new ArgumentNullException(nameof(usersLogin)); 
         }
 
-        public async Task<bool> Login(UserLoginRequest userEntrada)
+        public async Task<ModelUsers?> Login(UserLoginRequest userEntrada)
         {
             if (userEntrada == null)
             {
-                return false;
+                return null;
             }
 
 
@@ -26,7 +26,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin
             ModelUsers? usuarioBanco = await repositoryUsersLogin.UsernameExiste(userEntrada.username);
             if (usuarioBanco == null) {
                 // usuário não existe
-                return false;
+                return null;
             }
 
 
@@ -34,9 +34,9 @@ namespace API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin
             bool resultadoSenha = Cripto.VerificarSenhaCripto(userEntrada.senha,usuarioBanco.senha_hash,usuarioBanco.salt);
             if (resultadoSenha)
             {
-                return true;
+                return usuarioBanco;
             }
-            return false;
+            return null;
         }
 
 

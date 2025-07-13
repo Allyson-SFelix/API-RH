@@ -1,7 +1,8 @@
-﻿using System.Net;
-using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
+﻿using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
 using API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin;
+using API_ARMAZENA_FUNCIONARIOS.Services.TokenAuth;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Controllers
@@ -16,20 +17,22 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             this.usersLoginService = usersLogin ?? throw new ArgumentNullException(nameof(usersLogin)); ;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
          public async Task<IActionResult> Login([FromBody]UserLoginRequest usersLogin)
         {
-            bool resultado = await usersLoginService.Login(usersLogin);
-            if (resultado)
+            ModelUsers? resultado = await usersLoginService.Login(usersLogin);
+            if (resultado!=null)
             {
-                return Ok(new { Authorization = "true" });
+                var token = ConfigurationToken.GenerationToken(resultado);
+                return Ok(new { Authorization = token });
             }
 
             return BadRequest(new { Authorization = "false" });
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest usersLogin)

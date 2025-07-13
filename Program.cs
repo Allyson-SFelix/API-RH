@@ -1,11 +1,15 @@
+using System.Text;
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionContext;
 using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
 using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Repository;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
 using API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin;
+using API_ARMAZENA_FUNCIONARIOS.Services.TokenAuth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +40,11 @@ builder.Configuration["JwtSettings:SecretKey"] = KeySecret;
 //dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=IP;Port=Port;Database=BancoNome;User Id=User;Password=Senha;"
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+// pegar key no user-secret
+var KeySecret = builder.Configuration["JwtSettings:SecretKey"];
+
+KeyToken.SalvarKey(KeySecret);
+
 //armazenando para injeção de dependencia da string de conexão
 builder.Services.AddDbContext<DbConnectionContext>(options =>
     options.UseNpgsql(connectionString,
@@ -62,6 +71,30 @@ builder.Services.AddScoped<IUsersLoginService, UsersLoginService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+var chave = Encoding.UTF8.GetBytes(KeyToken.secretKey);
+
+// Configurar autenticação JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            // ValidIssuer = "minhaapi",
+            // ValidAudience = "meusclientes",
+            IssuerSigningKey = new SymmetricSecurityKey(chave)
+        };
+    });
+
+
+builder.Services.AddAuthorization();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,6 +111,7 @@ app.UseCors(builder =>
                .AllowAnyMethod()  // Permite qualquer método 
                .AllowAnyHeader() // Permite qualquer cabecalho (tipo de conteudo,token, ...)
 );
+
 
 
 app.UseHttpsRedirection();

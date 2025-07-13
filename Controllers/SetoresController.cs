@@ -4,6 +4,7 @@ using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Records;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Controllers
@@ -19,6 +20,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             this.setoresRep = setoresRep;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("PegarSetor")]
         public async Task<IActionResult> GetSetor([FromBody] SetorNome value) 
@@ -31,7 +33,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             return Ok(setor);
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("listarSetores")]
         public async Task<IActionResult> GetSetores()
@@ -45,6 +47,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             return BadRequest(new { Message = "Não existem Setores a serem Listados" });
         }
 
+        [Authorize]
         [HttpPost]
         [Route("salvarSetor")]
         public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) {
@@ -57,6 +60,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         }
 
+        [Authorize]
         [HttpPut]
         [Route("atualizarSetor")]
         public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo, string nome)
@@ -70,6 +74,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("removerSetor")]
         public async Task<IActionResult> RemoverSetor([FromBody] SetorNome value)

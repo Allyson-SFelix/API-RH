@@ -4,6 +4,7 @@ using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Records;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API_ARMAZENA_FUNCIONARIOS.Controllers
 {
@@ -24,6 +25,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
            // this.setoresRep = setores ?? throw new ArgumentNullException(nameof(setores));
         }
 
+        [Authorize]
         [HttpGet]
         [Route("listaFuncionarios")]
         public async Task<IActionResult> Get([FromBody]SetorNome value) {
@@ -38,6 +40,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("unitFuncionario")]
         public async Task<IActionResult> GetUnit([FromBody] FuncionarioCpf value)
@@ -53,6 +56,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("idFuncionario")]
         public async Task<IActionResult> GetId([FromBody] FuncionarioCpf value)
@@ -68,6 +72,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         [Route("inserirFuncionario")]
         public async Task<IActionResult> PostInserir([FromBody]FuncionarioRequest funcionario)
@@ -79,7 +84,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             return BadRequest(new { mensagem="Valor inadequados para serem salvos" });
         }
 
-
+        [Authorize]
         [HttpDelete]
         [Route("removerFuncionario")]
         public async Task<IActionResult> RemoverFuncionario([FromBody]FuncionarioCpf value)
@@ -92,7 +97,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             return BadRequest(new { Message="Remocao nao realizada" });
         }
 
-
+        [Authorize]
         [HttpPut]
         [Route("atualizarFuncionario")]
         public async Task<IActionResult> PutAtualizarFuncionario([FromBody] FuncionarioRequest funcionarioNovo, int id)
