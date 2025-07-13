@@ -1,6 +1,7 @@
 ﻿using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Model.Tables;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
+using API_ARMAZENA_FUNCIONARIOS.Services.ServiceSetores;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Records;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Request;
 using API_ARMAZENA_FUNCIONARIOS.ViewModel.Response;
@@ -13,11 +14,11 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
     [Route("api/setores")]
     public class SetoresController : Controller
     {
-        private readonly ISetores setoresRep;
+        private readonly IServiceSetores servicesSetores;
 
-        public SetoresController(ISetores setoresRep)
+        public SetoresController(IServiceSetores servicesSetores)
         {
-            this.setoresRep = setoresRep;
+            this.servicesSetores = servicesSetores;
         }
 
         [Authorize]
@@ -25,7 +26,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("PegarSetor")]
         public async Task<IActionResult> GetSetor([FromBody] SetorNome value) 
         {
-            SetoresResponse setor = await setoresRep.PegarSetor(value.nome);
+            SetoresResponse? setor = await servicesSetores.PegarSetor(value.nome);
             if (setor == null)
             {
                 return BadRequest(new {Message="Setor nao existe"});
@@ -38,7 +39,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("listarSetores")]
         public async Task<IActionResult> GetSetores()
         {
-            List<SetoresResponse> lista = await setoresRep.ListarSetores();
+            List<SetoresResponse> lista = await servicesSetores.ListarSetores();
             if ( lista != null)
             {
                 return Ok(lista);
@@ -52,7 +53,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("salvarSetor")]
         public async Task<IActionResult> SalvarSetor([FromBody] SetoresRequest setor) {
             
-            if(await setoresRep.SalvarSetor(setor) && ModelState.IsValid)
+            if(await servicesSetores.SalvarSetor(setor) && ModelState.IsValid)
             {
                 return Ok(new { Message = "Salvo com sucesso" });
             }
@@ -66,7 +67,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         public async Task<IActionResult> AtualizarSetor([FromBody] SetoresRequest setorNovo, string nome)
         {
             
-            if (await setoresRep.AtualizarSetor(nome,setorNovo) && ModelState.IsValid)
+            if (await servicesSetores.AtualizarSetor(nome,setorNovo) && ModelState.IsValid)
             {
                 return Ok(new { Message = "Salvo com sucesso" });
             }
@@ -79,7 +80,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
         [Route("removerSetor")]
         public async Task<IActionResult> RemoverSetor([FromBody] SetorNome value)
         {
-            if(await setoresRep.RemoverSetor(value.nome))
+            if(await servicesSetores.RemoverSetor(value.nome))
             {
                 return Ok(new {Message = "Removido com sucesso"});
             }

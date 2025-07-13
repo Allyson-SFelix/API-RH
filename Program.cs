@@ -4,6 +4,8 @@ using API_ARMAZENA_FUNCIONARIOS.Infraestrutura.ConnectionDapper;
 using API_ARMAZENA_FUNCIONARIOS.Model.EnumModel;
 using API_ARMAZENA_FUNCIONARIOS.Repository;
 using API_ARMAZENA_FUNCIONARIOS.Repository.IRepository;
+using API_ARMAZENA_FUNCIONARIOS.Services.ServiceFuncionario;
+using API_ARMAZENA_FUNCIONARIOS.Services.ServiceSetores;
 using API_ARMAZENA_FUNCIONARIOS.Services.ServicesUsersLogin;
 using API_ARMAZENA_FUNCIONARIOS.Services.TokenAuth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,7 +67,14 @@ DbConennectionDapper.SetConnection(connectionString!);
 builder.Services.AddScoped<IFuncionario,RepositoryFuncionario>();
 builder.Services.AddScoped<ISetores,RepositorySetores>();
 builder.Services.AddScoped<IRepositoryUsersLogin, RepositoryUsers>();
+
 builder.Services.AddScoped<IUsersLoginService, UsersLoginService>();
+builder.Services.AddScoped<IServiceFuncionario, ServiceFuncionario>();
+
+builder.Services.AddScoped<IServiceSetores, ServiceSetores>();
+
+
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

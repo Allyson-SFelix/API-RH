@@ -28,15 +28,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
 
 
-        public async Task<List<FuncionarioResponse>> ListarFuncionario(string nomeSetor)
+        public async Task<List<FuncionarioResponse>> ListarFuncionario(string nomeSetor, int id_Setor)
         {
-            // verifico se o nome do setor é válido
-            int id_Setor = await RepositorioHelper.VerificaSetor(nomeSetor);
-
-            if (id_Setor == 0)
-            {
-                return null!;
-            }
 
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
@@ -48,10 +41,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                     //deve haver esse casting para infomrar que garante ser desse tipo de enum que é enum
 
                     List<FuncionarioResponse> funcionarios = (await conn.QueryAsync<FuncionarioResponse>(query, new { id = id_Setor, status = EnumStatus.ativo.ToString() })).ToList();
-                    if (funcionarios == null)
-                    {
-                        return null!;
-                    }
+                    
                     return funcionarios;
                 }
                 catch (Exception ex)
@@ -65,11 +55,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<FuncionarioResponse> PegarFuncionario(string cpf)
         {
-            if (cpf == "")
-            {
-                return null!;
-            }
-
+            
 
             FuncionarioResponse funcionario = null!;
 
@@ -81,10 +67,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                         " JOIN setores s ON f.id_setor=s.id " +
                         " WHERE cpf=@Cpf AND f.status=@status::enum_status";
                     funcionario = await conn.QuerySingleAsync<FuncionarioResponse>(query, new { Cpf = cpf, status = EnumStatus.ativo.ToString() });
-                    if (funcionario == null)
-                    {
-                        return null!;
-                    }
+                    
                     return funcionario;
                 }
                 catch (Exception ex)
@@ -96,28 +79,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
         }
 
-        public async Task<bool> SalvarFuncionario([FromBody] FuncionarioRequest funcionario)
+        public async Task<bool> SalvarFuncionario([FromBody] FuncionarioRequest funcionario,int id_Setor)
         {
-            // verifico os dados que chegam
-            if (funcionario == null)
-            {
-                return false;
-            }
-
-            // verifico se o nome do setor é válido
-            int id_Setor = await RepositorioHelper.VerificaSetor(funcionario.setorNome);
-            if (id_Setor == 0)
-            {
-                return false;
-            }
-
-            // verificar se o cpf é unico (se existe algum igual ja salvo)
-            bool cpfUnico = await RepositorioHelper.CpfUniq(funcionario.cpf);
-            if (!cpfUnico)
-            {
-                return false;
-            }
-
             try
             {
 
@@ -141,10 +104,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<int> PegarIdFuncionario(string cpf)
         {
-            if (string.IsNullOrEmpty(cpf))
-            {
-                return 0;
-            }
+           
             
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
@@ -153,10 +113,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                     string query = "SELECT id FROM funcionarios WHERE cpf=@NewCpf";
 
                     int id = await conn.QueryFirstAsync<int>(query, new { NewCpf = cpf });
-                    if(id==0)
-                    {
-                        return 0;
-                    }
+                    
                     return id;
                 }
                 catch (Exception ex)
@@ -170,11 +127,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<bool> RemoveCliente(string cpf)
         {
-            if (cpf == "")
-            {
-                return false;
-            }
-
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
@@ -194,11 +146,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
         }
         public async Task<bool> atualizarFunionario(int id, FuncionarioRequest funcionarioNovo)
         {
-            if (id==0)
-            {
-                return false;
-            }
-
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try

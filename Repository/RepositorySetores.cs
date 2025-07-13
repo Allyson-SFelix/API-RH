@@ -25,17 +25,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
 
         public async Task<bool> SalvarSetor(SetoresRequest setor)
         {
-            if (setor == null)
-            {
-                return false;
-            }
-
-
-            if (await RepositorioHelper.VerificarSetorExiste(setor.nome))
-            {
-                return false;
-            }
-
+            
             try
             {
                ModelSetores setorModel = new ModelSetores(setor.nome, 0, setor.localizacao, EnumStatus.ativo);
@@ -55,18 +45,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
         }
-        public async Task<SetoresResponse> PegarSetor(string nome) 
+        public async Task<SetoresResponse?> PegarSetor(string nome, int idSetor) 
         {
-            if(nome == "")
-            {
-                return null!;
-            }
-
-            int idSetor =await RepositorioHelper.VerificaSetor(nome);
-            if (idSetor == 0)
-            {
-                return null!;
-            }
             try
             {
                 using (var conn = DbConennectionDapper.GetStringConnection())
@@ -75,10 +55,6 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                                  " WHERE id=@id AND status=@status::enum_status";
 
                     var setorResult = await conn.QueryFirstOrDefaultAsync<SetoresResponse>(sql, new { id = idSetor , status=EnumStatus.ativo.ToString()});
-                    if (setorResult == null)
-                    {
-                        return null!;
-                    }
                     return setorResult;
 
                 };
@@ -89,18 +65,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
 
         }
-        public async Task<bool> AtualizarSetor(string nome,SetoresRequest setorNovo) 
+        public async Task<bool> AtualizarSetor(string nome,SetoresRequest setorNovo,int id_setor) 
         {
-            if (nome == "")
-            {
-                return false;
-            }
-
-            int id_setor = await RepositorioHelper.VerificaSetor(nome);
-            if(id_setor == 0 && !(await RepositorioHelper.VerificarSetorExiste(nome)) )
-            {
-                return false;
-            }
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
@@ -120,27 +86,8 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
             }
         }
 
-        public async Task<bool> RemoverSetor(string nome) 
+        public async Task<bool> RemoverSetor(string nome, int setorId) 
         {
-            bool setorExiste = (await RepositorioHelper.VerificarSetorExiste(nome));
-
-            if (nome == "" || !setorExiste)
-            {
-                return false;
-            }
-
-            int setorId = await RepositorioHelper.VerificaSetor(nome);
-            if(setorId == 0 )
-            {
-                return false;
-            }
-
-            if (await RepositorioHelper.QtdFuncionariosSetor(setorId)==-1)
-            {
-                return false;
-            }
-            
-
             using (var conn = DbConennectionDapper.GetStringConnection())
             {
                 try
@@ -169,10 +116,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Repository
                 {
                     string query = "SELECT * FROM setores ORDER BY id ASC";
                     List<SetoresResponse> lista = (await conn.QueryAsync<SetoresResponse>(query)).ToList();
-                    if(lista == null)
-                    {
-                        return null!;
-                    }
+                   
                     return lista;
 
                 }catch(Exception e)

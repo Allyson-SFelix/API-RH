@@ -32,7 +32,7 @@ namespace API_ARMAZENA_FUNCIONARIOS.Controllers
             return BadRequest(new { Authorization = "false" });
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin,gerente")]
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest usersLogin)
